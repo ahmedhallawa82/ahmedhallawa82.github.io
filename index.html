@@ -280,6 +280,45 @@ h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:800;letter-spacing:-.5px
 .mg h3 i{font-style:normal;background:var(--chip);color:var(--chip-ink);border-radius:99px;padding:1px 9px;letter-spacing:0}
 .mg .chips span{font-size:.82rem;padding:5px 12px;background:var(--surface);color:var(--ink);border:1px solid var(--line)}
 @media(max-width:760px){.mem{grid-template-columns:1fr}}
+
+/* ===== project groups ===== */
+.pgroup{display:flex;flex-direction:column;gap:22px}
+.pgroup+.pgroup{margin-top:56px}
+.ghead{display:grid;grid-template-columns:auto 1fr;align-items:baseline;column-gap:14px;border-bottom:1px solid var(--line);padding-bottom:12px}
+.ghead h3{font-size:clamp(1.35rem,2.6vw,1.75rem)}
+.ghead span{justify-self:start;background:var(--chip);color:var(--chip-ink);font-size:.75rem;font-weight:700;padding:3px 10px;border-radius:99px;white-space:nowrap}
+.ghead p{grid-column:1/-1;color:var(--muted);font-size:.92rem;margin-top:4px}
+.gitems{display:flex;flex-direction:column;gap:28px}
+.gitems .project:nth-child(even) .pmedia{order:2}
+@media(max-width:860px){.gitems .project:nth-child(even) .pmedia{order:0}}
+.vthumb{position:relative}
+.vthumb i{position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-style:normal;font-size:1.1rem;background:rgba(0,0,0,.35)}
+/* projects slide in from alternating sides */
+.gitems .project.reveal{transform:translateX(-40px)}
+.gitems .project.reveal:nth-child(even){transform:translateX(40px)}
+.gitems .project.reveal.in{transform:none}
+
+/* ===== certificates: moving carousel ===== */
+.certs{display:block;overflow:hidden;padding:12px 0 18px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.ctrack{display:flex;width:max-content;animation:certscroll 55s linear infinite}
+.certs:hover .ctrack,.certs:focus-within .ctrack{animation-play-state:paused}
+.ctrack .cert{flex:0 0 250px;margin-right:18px;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s}
+.ctrack .cert:nth-child(odd){animation:certbob 6s ease-in-out infinite}
+.ctrack .cert:nth-child(even){animation:certbob 6s ease-in-out -3s infinite}
+.ctrack .cert:hover{transform:translateY(-8px) rotate(-1.2deg) scale(1.03);box-shadow:0 22px 40px rgba(43,36,32,.16);animation-play-state:paused}
+@keyframes certscroll{to{transform:translateX(-50%)}}
+@keyframes certbob{0%,100%{translate:0 0}50%{translate:0 -6px}}
+.chint{text-align:center;color:var(--muted);font-size:.8rem;margin-top:2px}
+
+/* ===== small extra motion ===== */
+.photo .pic{animation:photofloat 7s ease-in-out infinite}
+@keyframes photofloat{0%,100%{translate:0 0}50%{translate:0 -8px}}
+.mg .chips span{opacity:0;translate:0 8px;transition:opacity .5s,translate .5s,background .25s,color .25s}
+.mgroups.in .chips span{opacity:1;translate:0 0}
+.mg .chips span:hover{background:var(--chip);color:var(--chip-ink)}
+.mem-total b{display:inline-block;animation:pop 2.4s ease-in-out infinite}
+@keyframes pop{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@media (prefers-reduced-motion:reduce){.ctrack{width:auto;flex-wrap:wrap;gap:18px}.ctrack .cert{margin:0}.ctrack .cert[aria-hidden]{display:none}.mg .chips span{opacity:1;translate:none}.gitems .project.reveal{transform:none}}
 </style>
 </head>
 <body>
@@ -297,14 +336,12 @@ h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:800;letter-spacing:-.5px
   <div class="blob b1"></div><div class="blob b2"></div>
   <div class="wrap">
     <div>
-      <span class="tag reveal"><span class="dot"></span>Open to internships &amp; collaborations</span>
       <h1 class="reveal" style="--d:.1s">Hi, I'm <span class="grad">Ahmed Hallawa</span></h1>
       <div class="roles reveal" style="--d:.2s">I'm a <span class="typed" id="typed">Mechatronics Engineer</span><span class="caret"></span></div>
       <p class="sub reveal" style="--d:.3s">A Mechatronics &amp; AI Automation student at Benha University who turns ideas into machines that see, think and move — combining computer vision, control and embedded hardware into real, working systems.</p>
       <div class="cta reveal" style="--d:.4s">
         <a class="btn primary" href="#projects">Explore my work →</a>
         <a class="btn" href="https://www.linkedin.com/in/ahmedhallawa82" target="_blank" rel="noopener">LinkedIn</a>
-        <a class="btn" href="https://github.com/ahmedhallawa82" target="_blank" rel="noopener">GitHub</a>
       </div>
     </div>
     <div class="photo reveal zoom" style="--d:.2s">
@@ -335,9 +372,6 @@ h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:800;letter-spacing:-.5px
 
 <section id="projects" class="alt"><div class="wrap">
   <div class="head reveal"><small>Projects</small><h2>Things I've built</h2><div class="bar"></div></div>
-  <div class="filters reveal" id="filters">
-    <button class="on" data-f="all">All</button><button data-f="cv">Computer Vision</button><button data-f="robotics">Robotics</button><button data-f="ml">Machine Learning</button>
-  </div>
   <div class="plist" id="plist"></div>
 </div></section>
 
@@ -409,6 +443,7 @@ h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:800;letter-spacing:-.5px
 <section id="certificates" class="alt"><div class="wrap">
   <div class="head reveal"><small>Certificates</small><h2>Recognition &amp; certifications</h2><div class="bar"></div></div>
   <div class="certs" id="certs"></div>
+  <p class="chint">Hover to pause · tap a certificate to open it</p>
   <div class="courses reveal">
     <div><b>Artificial Intelligence</b><span>NTI · 2025</span></div>
     <div><b>AI &amp; Data Analysis Workshop</b><span>IEEE Suez SB</span></div>
@@ -426,7 +461,6 @@ h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:800;letter-spacing:-.5px
     <div class="cta">
       <a class="btn primary" href="mailto:ahmedhallawa@ieee.org">✉ ahmedhallawa@ieee.org</a>
       <a class="btn" href="https://www.linkedin.com/in/ahmedhallawa82" target="_blank" rel="noopener">LinkedIn</a>
-      <a class="btn" href="https://github.com/ahmedhallawa82" target="_blank" rel="noopener">GitHub</a>
       <a class="btn" href="Ahmed_Hallawa_CV.pdf" download>⬇ Professional CV</a>
       <a class="btn" href="Ahmed_Hallawa_Volunteer_CV.pdf" download>⬇ Volunteer CV</a>
     </div>
@@ -444,7 +478,7 @@ var THUMB=function(id,w){return 'https://drive.google.com/thumbnail?id='+id+'&sz
 var PREVIEW=function(id){return 'https://drive.google.com/file/d/'+id+'/preview'};
 
 var PROJECTS=[
- {cat:'cv ml', icon:'🎯', meta:'MAM 332 · Autonomous Systems · 2026',
+ {group:'ai', cat:'cv ml', icon:'🎯', meta:'MAM 332 · Autonomous Systems · 2026',
   title:'Persistent Re-ID Surveillance & Tracking System',
   desc:'Conventional trackers forget a person the moment they leave the frame — creating duplicate logs and false alerts. This system adds a session-persistent Re-Identification layer on top of YOLOv8 + ByteTrack, so every entity keeps one permanent ID (e.g. “Person 5”) through occlusions and re-entries.',
   kpis:[['0.88','mAP@50 (custom data)'],['30 Hz','real-time pipeline'],['< 2 ms','Re-ID overhead / frame'],['50','training epochs']],
@@ -453,7 +487,16 @@ var PROJECTS=[
   video:'1Wa7xoE4PD4uDTLt9wNkfk0_5aveG22gQ', images:[],
   links:[['Read the report ↗','https://drive.google.com/file/d/1pFFDzYwMErV0VZ3FOawAQQmA5LCvQb6f/view'],['Slides ↗','https://drive.google.com/file/d/1y8h1HR71c2_oVP8TUVM14lBPC8WwHcCc/view']]},
 
- {cat:'cv', icon:'🏭', meta:'Autonomous Systems · 2026 · Team project',
+ {group:'ai', cat:'ml cv', icon:'🛒', meta:'AI Professional Diploma · Graduation Project · Aug 2026 · Team of 4',
+  title:'Retail Product Recognition System',
+  desc:'Loose fruit has no barcode, so self-checkout lanes struggle to identify it. This deep-learning system recognises six produce categories from a single photo and runs live in a Streamlit dashboard — built on the Fruits-360 dataset (260 cultivar folders, 90,000+ images).',
+  kpis:[['0.97','macro F1-score'],['6','produce classes'],['14,917','training + test images'],['20','training epochs']],
+  points:['Automatic parser groups 260 cultivar folders into 6 classes (e.g. 30 apple varieties → “Apple”).','Class capping (2,000 train / 500 test per class) + balanced class weights fixed a 16,500-vs-2,000 apple imbalance.','uint8 arrays and a prefetching tf.data pipeline keep the whole dataset in cloud RAM without crashes.','Custom 5-stage CNN (Conv2D 200→40 filters, dropout 0.5) saved as .keras and served with cached loading for sub-second predictions.'],
+  chips:['TensorFlow / Keras','CNN','OpenCV','tf.data','scikit-learn','Streamlit','Fruits-360'],
+  video:'1UP8eSqzePOeZeWPu5PowKCZaUapWJVPE', videos:['1XRylNdzROh_ZgDPZ9D6s8qITHpNUCM5B'], images:[],
+  links:[['Read the report ↗','https://drive.google.com/file/d/1cwH5qtSNAumKD_cN1vBhOwDjUZf3y61G/view'],['Slides ↗','https://drive.google.com/file/d/1oesJlQFBz_X8mkFh9BHl0sRJZbXyOL4z/view']]},
+
+ {group:'ai', cat:'cv', icon:'🏭', meta:'Autonomous Systems · 2026 · Team project',
   title:'Industrial Computer Vision Suite',
   desc:'A smart-factory inspection app that unifies two optical engines under one GUI launcher: a colour & shape classifier for sorting products on a conveyor, and a real-time QR/barcode decoder for asset tracking.',
   kpis:[['30+ FPS','responsive dashboard'],['7','colour profiles (HSV)'],['4','shape classes'],['2','vision modules']],
@@ -462,7 +505,7 @@ var PROJECTS=[
   video:'17jLw-ewxxBN9tRq2oEAoWlMuZJxlwO1T', images:['1riHD-r05g0PII6HvrvfMfU6y_Hz4lcZv'],
   links:[['Read the report ↗','https://drive.google.com/file/d/1vWStF4OrEwXULku3etXiI-gF9muqIwCR/view'],['Slides ↗','https://drive.google.com/file/d/1OsXx2EkrFM7KCsZ_GsehtIZjlXf0__zX/view']]},
 
- {cat:'robotics', icon:'🏁', meta:'MAM 301 · Design of Mechatronics Systems · 2026',
+ {group:'rob', cat:'robotics', icon:'🏁', meta:'MAM 301 · Design of Mechatronics Systems · 2026',
   title:'Autonomous Line Follower Robot',
   desc:'A three-wheeled differential-drive robot that tracks high-contrast paths with a 5-channel IR array and a tuned PID controller — designed end-to-end with the V-Model, from requirements and a weighted concept-selection matrix to CAD, Simulink modelling and a physical prototype.',
   kpis:[['> 95%','path accuracy'],['0.5 m/s','max speed'],['< 150 ms','response time'],['10 ms','PID loop']],
@@ -471,20 +514,19 @@ var PROJECTS=[
   video:'1jJJ-a69pr7B1zTF4r2RCJd5WPz4x9sUL', images:['11axk_uC12VSSN9l3D23wjyHeA4I1lukW','1d8ZOoP-QPzGpE9wzy-xEw5TyC3mzAJDM','1hm0SKpLEznbuNAnoLPWwhnOrJsr4r_jp','16FFdyDGMwY6zedoUaOE9smceXjQDKjIn','1ZogZcSzttUlJqy7j1VDKtWNC6hth1rs1','1kEAj9IrYTSlPUGBqw6Vbmtwk62vz8zsq'],
   links:[['Read the report ↗','https://drive.google.com/file/d/1jCxo8afZyJ7VYGeSibJvTlp9M3eSdjEj/view'],['Slides ↗','https://drive.google.com/file/d/1kFaxvl129R9o7n4aMSUtSzdAJVKVE09G/view']]},
 
- {cat:'robotics', icon:'✋', meta:'Introduction to Mechatronics Systems · 2025',
+ {group:'rob', cat:'robotics', icon:'✋', meta:'Introduction to Mechatronics Systems · 2025',
   title:'Wireless Gesture-Controlled 4WD Robot',
   desc:'Drive a robot with a tilt of your hand. A hand-held Arduino Nano reads an MPU6050 IMU and sends Forward / Back / Left / Right / Stop commands over a paired master–slave HC-05 Bluetooth link to an Arduino UNO on the 4WD chassis.',
   kpis:[['5','motion commands'],['115200','baud UART link'],['4WD','L298N drive'],['2','Arduinos']],
   points:['HC-05 modules configured via AT commands — slave on the car, master bound to its address on the controller.','Calibrated tilt thresholds for smooth, accurate response to hand angle.','Li-ion 18650 packs and L298N drivers deliver the torque needed for the 4WD chassis.'],
   chips:['Arduino Uno / Nano','MPU6050','HC-05 Bluetooth','L298N','Embedded C'],
   video:'1Z79xjUX3c-fpbznH7vWVnkxTTwDNPF5Z', images:['1r12iHxZNkd5KfO7sZIoAqdAEbA5N5-D8','1N_KkPY7wQiBS9DLSvuZ5fw64UTRY8Uxn','1UOMMqoz5eUZ7tHD7-3mDP6rflyOjyg8g','1LWpfWKg-ZHllINosF4J4g83Bzr9CAKQU','1qpHntZjoLVJkxTFXFH4arhx-ABqAPAWl','1QjGiqjiuMNeuHOoUQjdC6MQBN-Q6E_3b'],
-  links:[['Read the report ↗','https://drive.google.com/file/d/1gbs9VfxvWDddKkg_kIIngeMPrrDHWcGn/view']]},
+  links:[['Read the report ↗','https://drive.google.com/file/d/1gbs9VfxvWDddKkg_kIIngeMPrrDHWcGn/view']]}
+];
 
- {cat:'ml cv', icon:'🍎', meta:'Deep Learning',
-  title:'Retail Bulk-Produce Classifier',
-  desc:'A custom 5-stage hierarchical CNN that recognises fresh produce for retail checkout, trained on Fruits-360 and served through an interactive Streamlit dashboard.',
-  kpis:[['97%','macro F1'],['6','core categories'],['5','CNN stages']],
-  points:[], chips:['TensorFlow','Keras','CNN','Streamlit'], video:null, images:[], links:[]}
+var GROUPS=[
+ {id:'ai', title:'AI &amp; Computer Vision', sub:'Deep learning, detection, tracking and industrial vision'},
+ {id:'rob', title:'Robotics &amp; Embedded Systems', sub:'Control, sensors and microcontroller firmware'}
 ];
 
 var CERTS=[
@@ -515,12 +557,13 @@ var STACK=['Python','YOLOv8','OpenCV','TensorFlow','PyTorch','ByteTrack','Arduin
 
   // projects
   var fb=function(icon){return 'this.style.display=\'none\';this.insertAdjacentHTML(\'afterend\',\'<div class=fallback>'+icon+'</div>\')'};
-  document.getElementById('plist').innerHTML=PROJECTS.map(function(p,i){
+  function card(p){
     var cover=p.video||p.images[0];
     var main='<div class="main" '+(p.video?'data-video="'+p.video+'"':(p.images[0]?'data-img="'+p.images[0]+'"':''))+'>'+
       (cover?'<img loading="lazy" src="'+THUMB(cover)+'" alt="'+esc(p.title)+'" onerror="'+fb(p.icon)+'">':'<div class="fallback">'+p.icon+'</div>')+
       (p.video?'<span class="play" aria-label="Play video"></span><span class="mlabel">▶ Watch demo</span>':'')+'</div>';
-    var thumbs=p.images.length?'<div class="thumbs">'+p.images.map(function(id){return '<button data-img="'+id+'" aria-label="Open image"><img loading="lazy" src="'+THUMB(id,300)+'" alt="" onerror="this.parentNode.style.display=\'none\'"></button>'}).join('')+'</div>':'';
+    var vids=(p.videos||[]).map(function(id){return '<button class="vthumb" data-video="'+id+'" aria-label="Play second demo video"><img loading="lazy" src="'+THUMB(id,300)+'" alt="" onerror="this.style.display=\'none\'"><i>▶</i></button>'}).join('');
+    var thumbs=(p.images.length||vids)?'<div class="thumbs">'+vids+p.images.map(function(id){return '<button data-img="'+id+'" aria-label="Open image"><img loading="lazy" src="'+THUMB(id,300)+'" alt="" onerror="this.parentNode.style.display=\'none\'"></button>'}).join('')+'</div>':'';
     return '<article class="project reveal" data-cat="'+p.cat+'">'+
       '<div class="pmedia">'+main+thumbs+'</div>'+
       '<div class="pbody"><div class="pmeta">'+esc(p.meta)+'</div><h3>'+esc(p.title)+'</h3><p>'+esc(p.desc)+'</p>'+
@@ -529,15 +572,20 @@ var STACK=['Python','YOLOv8','OpenCV','TensorFlow','PyTorch','ByteTrack','Arduin
       '<div class="chips">'+p.chips.map(function(c){return '<span>'+esc(c)+'</span>'}).join('')+'</div>'+
       (p.links.length?'<div class="plinks">'+p.links.map(function(l){return '<a href="'+l[1]+'" target="_blank" rel="noopener">'+esc(l[0])+'</a>'}).join('')+'</div>':'')+
       '</div></article>';
+  }
+  document.getElementById('plist').innerHTML=GROUPS.map(function(g){
+    var ps=PROJECTS.filter(function(p){return p.group===g.id});
+    return '<div class="pgroup" id="g-'+g.id+'"><div class="ghead reveal"><h3>'+g.title+'</h3><span>'+ps.length+' projects</span><p>'+g.sub+'</p></div><div class="gitems">'+ps.map(card).join('')+'</div></div>';
   }).join('');
 
   // certificates
-  document.getElementById('certs').innerHTML=CERTS.map(function(c,i){
+  var certHtml=function(dup){return CERTS.map(function(c,i){
     var src=c.img||THUMB(c.id,800);
-    return '<div class="card cert reveal" style="--d:'+(i%4*0.07)+'s" '+(c.img?'data-local="'+c.img+'"':'data-doc="'+c.id+'"')+'>'+
+    return '<div class="card cert"'+(dup?' aria-hidden="true"':' tabindex="0"')+' '+(c.img?'data-local="'+c.img+'"':'data-doc="'+c.id+'"')+'>'+
       '<div class="ci"><img loading="lazy" src="'+src+'" alt="'+esc(c.t)+'" onerror="'+fb('📜')+'"></div>'+
       '<div class="cinfo"><b>'+esc(c.t)+'</b><span class="muted" style="font-size:.82rem">'+esc(c.s)+'</span>'+(c.badge?'<br><span class="badge">'+esc(c.badge)+'</span>':'')+'</div></div>';
-  }).join('');
+  }).join('');};
+  document.getElementById('certs').innerHTML='<div class="ctrack">'+certHtml(false)+certHtml(true)+'</div>';
 
   // modal
   var modal=document.getElementById('modal'),mc=document.getElementById('mcontent');
@@ -564,17 +612,9 @@ var STACK=['Python','YOLOv8','OpenCV','TensorFlow','PyTorch','ByteTrack','Arduin
   }
   if(!reduce)setTimeout(tick,2400);
 
-  // filters
-  document.querySelectorAll('#filters button').forEach(function(b){
-    b.onclick=function(){
-      document.querySelectorAll('#filters button').forEach(function(x){x.classList.remove('on')});
-      b.classList.add('on');var f=b.dataset.f;
-      document.querySelectorAll('#plist .project').forEach(function(p){p.classList.toggle('hide',!(f==='all'||p.dataset.cat.split(' ').indexOf(f)>-1));});
-    };
-  });
-
   // reveal
   var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.1});
+  document.querySelectorAll('.mg .chips span').forEach(function(x,i){x.style.transitionDelay=(i*0.03)+'s'});
   document.querySelectorAll('.reveal').forEach(function(x){io.observe(x)});
   setTimeout(function(){document.querySelectorAll('.reveal').forEach(function(x){x.classList.add('in')})},4000);
 
