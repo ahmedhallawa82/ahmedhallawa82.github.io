@@ -353,12 +353,27 @@ h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:800;letter-spacing:-.5px
 .msg-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:16px}
 .msg-ico{flex-shrink:0;width:46px;height:46px;border-radius:13px;display:grid;place-items:center;font-size:1.35rem;background:var(--chip)}
 .msg-head h3{font-size:1.25rem;margin-bottom:4px}
-#msgText{display:block;width:100%;min-height:130px;resize:vertical;padding:14px 16px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:16px;line-height:1.55;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;appearance:none}
-#msgText:focus{outline:none;border-color:var(--a1);box-shadow:0 0 0 3px var(--glow)}
-#msgText::placeholder{color:var(--muted);opacity:.8}
+.mtabs{display:flex;gap:6px;padding:5px;margin-bottom:22px;border-radius:99px;background:var(--surface-2);border:1px solid var(--line)}
+.mtabs button{flex:1;border:0;background:transparent;color:var(--muted);font:inherit;font-weight:600;font-size:.92rem;padding:10px 14px;border-radius:99px;cursor:pointer;transition:background .25s,color .25s,box-shadow .25s;-webkit-tap-highlight-color:transparent}
+.mtabs button:hover{color:var(--ink)}
+.mtabs button.on{background:var(--surface);color:var(--ink);box-shadow:0 2px 8px rgba(43,36,32,.10)}
+.mtabs button:focus-visible{outline:2px solid var(--a1);outline-offset:2px}
+.mpanel[hidden]{display:none}
+.mpanel{animation:fade .3s}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:.84rem;font-weight:600;margin-bottom:6px;color:var(--ink)}
+.mform input:not(.hp){display:block;width:100%;padding:12px 16px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:16px;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;appearance:none}
+.mform input:not(.hp):focus{outline:none;border-color:var(--a1);box-shadow:0 0 0 3px var(--glow)}
+.mform input::placeholder{color:var(--muted);opacity:.7}
+.mform [aria-invalid="true"]{border-color:#dc2626!important;box-shadow:0 0 0 3px rgba(220,38,38,.12)!important}
+@media(max-width:480px){.frow{grid-template-columns:1fr;gap:0}.mtabs button{font-size:.86rem;padding:10px 8px}}
+.mform textarea,#msgText{display:block;width:100%;min-height:130px;resize:vertical;padding:14px 16px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:16px;line-height:1.55;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;appearance:none}
+.mform textarea:focus,#msgText:focus{outline:none;border-color:var(--a1);box-shadow:0 0 0 3px var(--glow)}
+.mform textarea::placeholder,#msgText::placeholder{color:var(--muted);opacity:.8}
 .msg-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-top:12px}
 .msg-foot .muted{font-size:.82rem}
-#msgBtn[disabled]{opacity:.6;cursor:not-allowed;transform:none}
+.mform button[disabled]{opacity:.6;cursor:not-allowed;transform:none}
 .msg-status{margin-top:12px;font-size:.92rem;font-weight:600;min-height:1.2em}
 .msg-status.ok{color:#15803d}.msg-status.err{color:#b91c1c}
 :root[data-theme="dark"] .msg-status.ok{color:#4ade80}:root[data-theme="dark"] .msg-status.err{color:#f87171}
@@ -553,21 +568,50 @@ h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:800;letter-spacing:-.5px
   </div>
 
   <div class="msg card reveal" id="message">
-    <div class="msg-head">
-      <span class="msg-ico">💬</span>
-      <div><h3>Leave me an anonymous message</h3>
-      <p class="muted">Feedback, a question, an idea — no name or email needed. It goes straight to my inbox, and I won't know who sent it.</p></div>
+    <div class="mtabs" role="tablist" aria-label="Message type">
+      <button type="button" role="tab" id="tab-contact" aria-controls="panel-contact" aria-selected="true" class="on">✉️ Get in touch</button>
+      <button type="button" role="tab" id="tab-anon" aria-controls="panel-anon" aria-selected="false" tabindex="-1">🕶️ Anonymous</button>
     </div>
-    <form id="msgForm" novalidate>
-      <label for="msgText" class="sr">Your message</label>
-      <textarea id="msgText" name="message" rows="5" maxlength="2000" required placeholder="Write your message here…"></textarea>
-      <input type="text" name="_honey" id="msgHoney" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-      <div class="msg-foot">
-        <span class="muted" id="msgCount">0 / 2000</span>
-        <button class="btn primary" type="submit" id="msgBtn">Send anonymously →</button>
+
+    <div class="mpanel" id="panel-contact" role="tabpanel" aria-labelledby="tab-contact">
+      <div class="msg-head">
+        <span class="msg-ico">✉️</span>
+        <div><h3>Send me a message</h3>
+        <p class="muted">Internship, collaboration or just a hello — leave your details and I'll reply to your email.</p></div>
       </div>
-      <p class="msg-status" id="msgStatus" role="status" aria-live="polite"></p>
-    </form>
+      <form class="mform" id="contactForm" data-kind="contact" novalidate>
+        <div class="frow">
+          <div class="field"><label for="cFirst">First name</label><input id="cFirst" name="first" type="text" autocomplete="given-name" maxlength="60" required placeholder="Ahmed"></div>
+          <div class="field"><label for="cLast">Last name</label><input id="cLast" name="last" type="text" autocomplete="family-name" maxlength="60" required placeholder="Ali"></div>
+        </div>
+        <div class="field"><label for="cEmail">Your email</label><input id="cEmail" name="email" type="email" inputmode="email" autocomplete="email" maxlength="120" required placeholder="you@example.com"></div>
+        <div class="field"><label for="cMsg">Message</label><textarea id="cMsg" name="message" rows="5" maxlength="2000" required placeholder="Write your message here…"></textarea></div>
+        <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="msg-foot">
+          <span class="muted mcount">0 / 2000</span>
+          <button class="btn primary" type="submit" data-label="Send message →">Send message →</button>
+        </div>
+        <p class="msg-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+
+    <div class="mpanel" id="panel-anon" role="tabpanel" aria-labelledby="tab-anon" hidden>
+      <div class="msg-head">
+        <span class="msg-ico">💬</span>
+        <div><h3>Leave me an anonymous message</h3>
+        <p class="muted">Feedback, a question, an idea — no name or email needed. It goes straight to my inbox, and I won't know who sent it.</p></div>
+      </div>
+      <form class="mform" id="msgForm" data-kind="anon" novalidate>
+        <label for="msgText" class="sr">Your message</label>
+        <textarea id="msgText" name="message" rows="5" maxlength="2000" required placeholder="Write your message here…"></textarea>
+        <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="msg-foot">
+          <span class="muted mcount">0 / 2000</span>
+          <button class="btn primary" type="submit" data-label="Send anonymously →">Send anonymously →</button>
+        </div>
+        <p class="msg-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
   </div>
 </div></section>
 
@@ -800,33 +844,60 @@ var STACK=['Python','YOLOv8','OpenCV','TensorFlow','PyTorch','ByteTrack','Arduin
   addEventListener('keydown',function(e){if(e.key==='Escape')setMenu(false)});
   addEventListener('resize',function(){if(innerWidth>860)setMenu(false)});
 
-  // anonymous message form
-  var form=document.getElementById('msgForm'),txt=document.getElementById('msgText'),cnt=document.getElementById('msgCount'),
-      sbtn=document.getElementById('msgBtn'),stat=document.getElementById('msgStatus'),honey=document.getElementById('msgHoney');
-  function status(m,cls){stat.textContent=m;stat.className='msg-status'+(cls?' '+cls:'');}
-  txt.addEventListener('input',function(){cnt.textContent=txt.value.length+' / 2000';if(stat.classList.contains('err'))status('')});
-  form.addEventListener('submit',function(e){
-    e.preventDefault();
-    var m=txt.value.trim();
-    if(m.length<2){status('Please write a message first.','err');txt.focus();return;}
-    if(honey.value){status('Thanks! Your message was sent.','ok');form.reset();return;} // bot trap
-    sbtn.disabled=true;sbtn.textContent='Sending…';status('');
-    var ctrl=('AbortController' in window)?new AbortController():null,to=setTimeout(function(){if(ctrl)ctrl.abort()},20000);
-    fetch(MSG_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
-      body:JSON.stringify({message:m,_subject:'💬 New anonymous message from your portfolio',_template:'box',_captcha:'false'}),
-      signal:ctrl?ctrl.signal:undefined})
-    .then(function(r){return r.json().catch(function(){return {}}).then(function(d){return {ok:r.ok,d:d}})})
-    .then(function(res){
-      clearTimeout(to);
-      if(res.ok&&String(res.d.success)!=='false'){
-        status('Thanks! Your message was sent anonymously. ✓','ok');form.reset();cnt.textContent='0 / 2000';
-        sbtn.textContent='Sent ✓';setTimeout(function(){sbtn.disabled=false;sbtn.textContent='Send anonymously →'},15000);
-      }else throw new Error(res.d&&res.d.message||'failed');
-    })
-    .catch(function(){
-      clearTimeout(to);
-      status('Sorry, it couldn\'t be sent right now. Please try again in a moment.','err');
-      sbtn.disabled=false;sbtn.textContent='Send anonymously →';
+  // message tabs (Get in touch / Anonymous)
+  var tabs=[].slice.call(document.querySelectorAll('.mtabs [role=tab]'));
+  function selectTab(t,focus){
+    tabs.forEach(function(b){var on=b===t;b.classList.toggle('on',on);b.setAttribute('aria-selected',on?'true':'false');b.tabIndex=on?0:-1;
+      document.getElementById(b.getAttribute('aria-controls')).hidden=!on;});
+    if(focus)t.focus();
+  }
+  tabs.forEach(function(b,i){
+    b.addEventListener('click',function(){selectTab(b)});
+    b.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();selectTab(tabs[(i+(e.key==='ArrowRight'?1:tabs.length-1))%tabs.length],true);}});
+  });
+
+  // message forms (both go to email via FormSubmit)
+  var EMAIL_RE=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  [].slice.call(document.querySelectorAll('.mform')).forEach(function(form){
+    var kind=form.getAttribute('data-kind'),txt=form.querySelector('textarea'),cnt=form.querySelector('.mcount'),
+        sbtn=form.querySelector('button[type=submit]'),stat=form.querySelector('.msg-status'),honey=form.querySelector('.hp'),label=sbtn.getAttribute('data-label');
+    function status(m,cls){stat.textContent=m;stat.className='msg-status'+(cls?' '+cls:'');}
+    function bad(el,m){el.setAttribute('aria-invalid','true');status(m,'err');el.focus();return true;}
+    txt.addEventListener('input',function(){cnt.textContent=txt.value.length+' / 2000'});
+    form.addEventListener('input',function(e){e.target.removeAttribute('aria-invalid');if(stat.classList.contains('err'))status('')});
+    form.addEventListener('submit',function(e){
+      e.preventDefault();
+      var m=txt.value.trim(),data;
+      if(kind==='contact'){
+        var f=form.first.value.trim(),l=form.last.value.trim(),em=form.email.value.trim();
+        if(!f&&bad(form.first,'Please enter your first name.'))return;
+        if(!l&&bad(form.last,'Please enter your last name.'))return;
+        if(!EMAIL_RE.test(em)&&bad(form.email,'Please enter a valid email address.'))return;
+        if(m.length<2&&bad(txt,'Please write a message first.'))return;
+        data={'First name':f,'Last name':l,email:em,message:m,_replyto:em,_subject:'✉️ New message from '+f+' '+l+' — portfolio',_template:'table',_captcha:'false'};
+      }else{
+        if(m.length<2&&bad(txt,'Please write a message first.'))return;
+        data={message:m,_subject:'💬 New anonymous message from your portfolio',_template:'box',_captcha:'false'};
+      }
+      if(honey.value){status('Thanks! Your message was sent.','ok');form.reset();return;} // bot trap
+      sbtn.disabled=true;sbtn.textContent='Sending…';status('');
+      var ctrl=('AbortController' in window)?new AbortController():null,to=setTimeout(function(){if(ctrl)ctrl.abort()},20000);
+      fetch(MSG_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
+        body:JSON.stringify(data),signal:ctrl?ctrl.signal:undefined})
+      .then(function(r){return r.json().catch(function(){return {}}).then(function(d){return {ok:r.ok,d:d}})})
+      .then(function(res){
+        clearTimeout(to);
+        if(res.ok&&String(res.d.success)!=='false'){
+          status(kind==='contact'?'Thanks, '+data['First name']+'! Your message was sent — I\'ll reply to your email soon. ✓':'Thanks! Your message was sent anonymously. ✓','ok');
+          form.reset();cnt.textContent='0 / 2000';
+          sbtn.textContent='Sent ✓';setTimeout(function(){sbtn.disabled=false;sbtn.textContent=label},15000);
+        }else throw new Error(res.d&&res.d.message||'failed');
+      })
+      .catch(function(){
+        clearTimeout(to);
+        status('Sorry, it couldn\'t be sent right now. Please try again in a moment.','err');
+        sbtn.disabled=false;sbtn.textContent=label;
+      });
     });
   });
 
