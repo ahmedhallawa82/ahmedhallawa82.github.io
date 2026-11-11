@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#faf6f0" id="themeColor">
 <title>Ahmed Hallawa | Mechatronics &amp; AI Engineer</title>
 <meta name="description" content="Portfolio of Ahmed Esam Yahia Hallawa — Mechatronics & AI Automation engineering student at Benha University. Computer vision, robotics and embedded systems projects.">
 <meta property="og:title" content="Ahmed Hallawa — Portfolio">
@@ -39,16 +40,36 @@ h1,h2,h3{font-family:"Space Grotesk",Inter,sans-serif;line-height:1.2}
 #progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;background:linear-gradient(90deg,var(--a1),var(--a2))}
 
 /* nav */
-nav{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
-.logo{font-family:"Space Grotesk";font-weight:700;font-size:1.2rem}
-.links{display:flex;gap:24px;align-items:center;font-size:.92rem;color:var(--muted)}
+/* fixed (not sticky) so it works on every mobile browser; solid fallback bg where color-mix/backdrop-filter aren't supported */
+nav{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--bg);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+@supports (background:color-mix(in srgb,red 50%,transparent)) and ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  nav{background:color-mix(in srgb,var(--bg) 84%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+}
+body{padding-top:calc(64px + env(safe-area-inset-top,0px))}
+section,header,#message{scroll-margin-top:84px}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:64px}
+.logo{font-family:"Space Grotesk";font-weight:700;font-size:1.2rem;white-space:nowrap}
+.links{display:flex;gap:24px;align-items:center;font-size:.92rem;color:var(--muted);margin-left:auto}
 .links a{position:relative}
 .links a:after{content:"";position:absolute;left:0;bottom:-4px;height:2px;width:0;background:var(--a1);transition:width .3s}
 .links a:hover,.links a.act{color:var(--ink)}.links a:hover:after,.links a.act:after{width:100%}
-.toggle{border:1px solid var(--line);background:var(--surface);color:var(--ink);width:40px;height:40px;border-radius:12px;cursor:pointer;font-size:1.05rem;transition:transform .4s}
-.toggle:hover{transform:rotate(25deg)}
-@media(max-width:760px){.links a{display:none}}
+.nav-actions{display:flex;gap:8px;align-items:center;flex-shrink:0}
+.toggle{border:1px solid var(--line);background:var(--surface);color:var(--ink);width:42px;height:42px;border-radius:12px;cursor:pointer;font-size:1.05rem;transition:transform .4s;display:grid;place-items:center;-webkit-tap-highlight-color:transparent}
+#themeBtn:hover{transform:rotate(25deg)}
+.menu-btn{display:none;gap:4px;align-content:center;justify-items:center}
+.menu-btn span{display:block;width:18px;height:2px;border-radius:2px;background:var(--ink);transition:transform .3s,opacity .3s}
+.menu-btn[aria-expanded="true"] span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.menu-btn[aria-expanded="true"] span:nth-child(2){opacity:0}
+.menu-btn[aria-expanded="true"] span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+@media(max-width:860px){
+  .menu-btn{display:grid}
+  .links{position:absolute;top:100%;left:0;right:0;margin:0;flex-direction:column;align-items:stretch;gap:0;padding:8px 16px 16px;background:var(--bg);border-bottom:1px solid var(--line);box-shadow:0 18px 30px rgba(0,0,0,.08);max-height:calc(100vh - 64px);overflow-y:auto;visibility:hidden;opacity:0;transform:translateY(-8px);transition:opacity .25s,transform .25s,visibility 0s .25s}
+  .links.open{visibility:visible;opacity:1;transform:none;transition:opacity .25s,transform .25s}
+  .links a{padding:14px 4px;font-size:1.02rem;font-weight:600;color:var(--ink);border-bottom:1px solid var(--line)}
+  .links a:last-child{border-bottom:0}
+  .links a:after{display:none}
+  .links a.act{color:var(--a1)}
+}
 
 /* hero */
 .hero{position:relative;padding:90px 0 100px;overflow:hidden}
@@ -299,10 +320,17 @@ h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:800;letter-spacing:-.5px
 .gitems .project.reveal.in{transform:none}
 
 /* ===== certificates: moving carousel ===== */
-.certs{display:block;overflow:hidden;padding:12px 0 18px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
-.ctrack{display:flex;width:max-content;animation:certscroll 55s linear infinite}
-.certs:hover .ctrack,.certs:focus-within .ctrack{animation-play-state:paused}
+.cwrap{position:relative}
+.certs{display:block;overflow:hidden;padding:12px 0 18px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);touch-action:pan-y;cursor:grab;-webkit-user-select:none;user-select:none;outline:none}
+.certs.dragging{cursor:grabbing}
+.certs.dragging .cert{pointer-events:none}
+.certs img{-webkit-user-drag:none;user-drag:none}
+.ctrack{display:flex;width:max-content;will-change:transform}
 .ctrack .cert{flex:0 0 250px;margin-right:18px;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s}
+.carr{position:absolute;top:50%;z-index:3;width:44px;height:44px;margin-top:-22px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:1.6rem;line-height:1;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.12);display:grid;place-items:center;padding-bottom:3px;transition:transform .2s,border-color .2s;-webkit-tap-highlight-color:transparent}
+.carr:hover{border-color:var(--a1);transform:scale(1.08)}
+.carr.prev{left:-6px}.carr.next{right:-6px}
+@media(max-width:600px){.ctrack .cert{flex-basis:215px;margin-right:14px}.carr{width:38px;height:38px;margin-top:-19px;font-size:1.4rem}.carr.prev{left:-2px}.carr.next{right:-2px}}
 .ctrack .cert:nth-child(odd){animation:certbob 6s ease-in-out infinite}
 .ctrack .cert:nth-child(even){animation:certbob 6s ease-in-out -3s infinite}
 .ctrack .cert:hover{transform:translateY(-8px) rotate(-1.2deg) scale(1.03);box-shadow:0 22px 40px rgba(43,36,32,.16);animation-play-state:paused}
@@ -318,17 +346,71 @@ h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:800;letter-spacing:-.5px
 .mg .chips span:hover{background:var(--chip);color:var(--chip-ink)}
 .mem-total b{display:inline-block;animation:pop 2.4s ease-in-out infinite}
 @keyframes pop{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
-@media (prefers-reduced-motion:reduce){.ctrack{width:auto;flex-wrap:wrap;gap:18px}.ctrack .cert{margin:0}.ctrack .cert[aria-hidden]{display:none}.mg .chips span{opacity:1;translate:none}.gitems .project.reveal{transform:none}}
+@media (prefers-reduced-motion:reduce){.mg .chips span{opacity:1;translate:none}.gitems .project.reveal{transform:none}}
+
+/* ===== anonymous message ===== */
+#message{max-width:760px;margin:28px auto 0;padding:28px}
+.msg-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:16px}
+.msg-ico{flex-shrink:0;width:46px;height:46px;border-radius:13px;display:grid;place-items:center;font-size:1.35rem;background:var(--chip)}
+.msg-head h3{font-size:1.25rem;margin-bottom:4px}
+#msgText{display:block;width:100%;min-height:130px;resize:vertical;padding:14px 16px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:16px;line-height:1.55;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;appearance:none}
+#msgText:focus{outline:none;border-color:var(--a1);box-shadow:0 0 0 3px var(--glow)}
+#msgText::placeholder{color:var(--muted);opacity:.8}
+.msg-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-top:12px}
+.msg-foot .muted{font-size:.82rem}
+#msgBtn[disabled]{opacity:.6;cursor:not-allowed;transform:none}
+.msg-status{margin-top:12px;font-size:.92rem;font-weight:600;min-height:1.2em}
+.msg-status.ok{color:#15803d}.msg-status.err{color:#b91c1c}
+:root[data-theme="dark"] .msg-status.ok{color:#4ade80}:root[data-theme="dark"] .msg-status.err{color:#f87171}
+.hp{position:absolute!important;left:-9999px!important;width:1px;height:1px;opacity:0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media(max-width:600px){#message{padding:20px}.msg-foot .btn{width:100%;justify-content:center}}
+
+/* ===== responsive hardening (all phone sizes) ===== */
+.comps{grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr))}
+.courses{grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr))}
+.amb{grid-template-columns:repeat(auto-fill,minmax(min(250px,100%),1fr))}
+.kpis{grid-template-columns:repeat(auto-fit,minmax(min(110px,100%),1fr))}
+.top{right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+.mbox{max-height:90vh;max-height:90dvh}
+.mbox iframe.doc{height:85vh;height:80dvh}
+.mbox img{max-height:85vh;max-height:80dvh}
+@media(max-width:600px){
+  .wrap{padding:0 16px}
+  section{padding:56px 0}
+  .hero{padding:48px 0 64px}
+  .hero h1{font-size:clamp(2.1rem,10vw,2.8rem)}
+  .roles{font-size:.85rem;letter-spacing:2px}
+  .cta .btn{flex:1 1 auto;justify-content:center}
+  .card{padding:18px}
+  .pbody{padding:18px}
+  .pmedia{min-height:220px}.main{min-height:200px}
+  .timeline{margin-left:4px;padding-left:26px}
+  .tl:before{left:-34px}
+  .courses span{white-space:normal}
+  .modal{padding:12px}
+  .mclose{top:8px;right:8px;z-index:2;box-shadow:0 4px 14px rgba(0,0,0,.4)}
+  .photo .s1{left:-6%!important}.photo .s2{right:-6%!important}
+  .contact-box{padding:36px 18px}
+}
+@media(max-width:360px){
+  .logo{font-size:1.05rem}
+  .toggle{width:38px;height:38px}
+  .ctrack .cert{flex-basis:190px}
+}
 </style>
 </head>
 <body>
 <div id="progress"></div>
 
-<nav><div class="wrap">
+<nav id="nav"><div class="wrap">
   <a href="#top" class="logo">Ahmed <span class="grad">Hallawa</span></a>
-  <div class="links">
-    <a href="#about">About</a><a href="#projects">Projects</a><a href="#leadership">Leadership</a><a href="#certificates">Certificates</a><a href="#contact">Contact</a>
+  <div class="links" id="navLinks">
+    <a href="#about">About</a><a href="#projects">Projects</a><a href="#leadership">Leadership</a><a href="#certificates">Certificates</a><a href="#contact">Contact</a><a href="#message">Message</a>
+  </div>
+  <div class="nav-actions">
     <button class="toggle" id="themeBtn" aria-label="Toggle light/dark theme">🌙</button>
+    <button class="toggle menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
   </div>
 </div></nav>
 
@@ -379,20 +461,9 @@ h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:800;letter-spacing:-.5px
   <div class="head reveal"><small>Leadership</small><h2>My IEEE journey</h2><div class="bar"></div></div>
   <div class="timeline" id="timeline"><div class="fill" id="tlFill"></div>
     <div class="tl reveal card">
-      <div class="when">SEP 2025 – AUG 2026</div>
-      <h3>Branch Treasurer — Executive Board</h3>
-      <div class="org">IEEE Benha University Student Branch</div>
-      <ul>
-        <li>Managed branch finances, budgeting and funding for all activities, including mega events TURBO CUP and LOST.</li>
-        <li>Led three days of recruitment interviews, screening 750+ applicants.</li>
-        <li>Supervised the first-ever launch of the branch's Computer Society Chapter and SIGHT Group.</li>
-        <li>Managed Let's Embark (4th edition), ResearchX with RAS, and launched the first Tachtech Ramadan initiative.</li>
-      </ul>
-    </div>
-    <div class="tl reveal card">
-      <div class="when">APR 2025 – SEP 2025</div>
-      <h3>Head of Business Development Committee</h3>
-      <div class="org">Banha Rally</div>
+      <div class="when">2022</div>
+      <h3>GHOSTECH — Where it all started</h3>
+      <div class="org">IEEE BUB SB Season 8 Mega Event · 5 days of hardware &amp; software workshops</div>
     </div>
     <div class="tl reveal card">
       <div class="when">OCT 2023 – SEP 2024</div>
@@ -405,18 +476,29 @@ h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:800;letter-spacing:-.5px
       <span class="award">🏆 Best Member of the Fundraising Committee 2024</span>
     </div>
     <div class="tl reveal card">
-      <div class="when">2022</div>
-      <h3>GHOSTECH — Where it all started</h3>
-      <div class="org">IEEE BUB SB Season 8 Mega Event · 5 days of hardware &amp; software workshops</div>
+      <div class="when">APR 2025 – SEP 2025</div>
+      <h3>Head of Business Development Committee</h3>
+      <div class="org">Banha Rally</div>
+    </div>
+    <div class="tl reveal card">
+      <div class="when">SEP 2025 – AUG 2026</div>
+      <h3>Branch Treasurer — Executive Board</h3>
+      <div class="org">IEEE Benha University Student Branch</div>
+      <ul>
+        <li>Managed branch finances, budgeting and funding for all activities, including mega events TURBO CUP and LOST.</li>
+        <li>Led three days of recruitment interviews, screening 750+ applicants.</li>
+        <li>Supervised the first-ever launch of the branch's Computer Society Chapter and SIGHT Group.</li>
+        <li>Managed Let's Embark (4th edition), ResearchX with RAS, and launched the first Tachtech Ramadan initiative.</li>
+      </ul>
     </div>
   </div>
   <h3 class="reveal" style="margin:30px 0 4px">Ambassadorships</h3>
   <div class="amb">
+    <div class="card reveal"><b>TSYP 14.0 Congress, Tunisia</b><small>Jul 2026 – Present</small></div>
+    <div class="card reveal" style="--d:.08s"><b>IEEE Sensors Council Egypt Chapter</b><small>Jul 2026 – Present</small></div>
+    <div class="card reveal" style="--d:.16s"><b>IEEEXtreme 20.0 — SB Ambassador</b><small>Jul – Nov 2026</small></div>
     <div class="card reveal"><b>IEEE Region 8 Entrepreneurship Committee</b><small>Sep 2026 – Present</small></div>
-    <div class="card reveal" style="--d:.08s"><b>TSYP 14.0 Congress, Tunisia</b><small>Jul 2026 – Present</small></div>
-    <div class="card reveal" style="--d:.16s"><b>IEEE Sensors Council Egypt Chapter</b><small>Jul 2026 – Present</small></div>
-    <div class="card reveal"><b>IEEE CS R8 Chapter Champions League</b><small>Oct 2026 – Present</small></div>
-    <div class="card reveal" style="--d:.08s"><b>IEEEXtreme 20.0 — SB Ambassador</b><small>Jul – Nov 2026</small></div>
+    <div class="card reveal" style="--d:.08s"><b>IEEE CS R8 Chapter Champions League</b><small>Oct 2026 – Present</small></div>
     <div class="card reveal" style="--d:.16s"><b>TechX 2K26 — Campus Ambassador</b><small>Oct – Nov 2026</small></div>
   </div>
 </div></section>
@@ -442,8 +524,12 @@ h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:800;letter-spacing:-.5px
 
 <section id="certificates" class="alt"><div class="wrap">
   <div class="head reveal"><small>Certificates</small><h2>Recognition &amp; certifications</h2><div class="bar"></div></div>
-  <div class="certs" id="certs"></div>
-  <p class="chint">Hover to pause · tap a certificate to open it</p>
+  <div class="cwrap">
+    <button class="carr prev" id="certPrev" aria-label="Previous certificates">‹</button>
+    <div class="certs" id="certs" role="region" aria-label="Certificates — drag or swipe to browse" tabindex="0"></div>
+    <button class="carr next" id="certNext" aria-label="Next certificates">›</button>
+  </div>
+  <p class="chint">Drag or swipe to browse · tap a certificate to open it</p>
   <div class="courses reveal">
     <div><b>Artificial Intelligence</b><span>NTI · 2025</span></div>
     <div><b>AI &amp; Data Analysis Workshop</b><span>IEEE Suez SB</span></div>
@@ -464,6 +550,24 @@ h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:800;letter-spacing:-.5px
       <a class="btn" href="Ahmed_Hallawa_CV.pdf" download>⬇ Professional CV</a>
       <a class="btn" href="Ahmed_Hallawa_Volunteer_CV.pdf" download>⬇ Volunteer CV</a>
     </div>
+  </div>
+
+  <div class="msg card reveal" id="message">
+    <div class="msg-head">
+      <span class="msg-ico">💬</span>
+      <div><h3>Leave me an anonymous message</h3>
+      <p class="muted">Feedback, a question, an idea — no name or email needed. It goes straight to my inbox, and I won't know who sent it.</p></div>
+    </div>
+    <form id="msgForm" novalidate>
+      <label for="msgText" class="sr">Your message</label>
+      <textarea id="msgText" name="message" rows="5" maxlength="2000" required placeholder="Write your message here…"></textarea>
+      <input type="text" name="_honey" id="msgHoney" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="msg-foot">
+        <span class="muted" id="msgCount">0 / 2000</span>
+        <button class="btn primary" type="submit" id="msgBtn">Send anonymously →</button>
+      </div>
+      <p class="msg-status" id="msgStatus" role="status" aria-live="polite"></p>
+    </form>
   </div>
 </div></section>
 
@@ -540,6 +644,11 @@ var CERTS=[
  {t:'Season 2023/2024 Recognition', s:'IEEE Benha University SB', id:'1NZgU2nALV_wJ-p0U78ATVQ4a2u8QLhaI'}
 ];
 
+// Anonymous messages are delivered by FormSubmit (formsubmit.co) to this address.
+// After the first message you'll get an activation email — click it once. FormSubmit then
+// emails you a random alias you can paste here instead of the address, to hide it from the source.
+var MSG_ENDPOINT='https://formsubmit.co/ajax/ahmedhallawa@ieee.org';
+
 var STACK=['Python','YOLOv8','OpenCV','TensorFlow','PyTorch','ByteTrack','Arduino','PID Control','MATLAB / Simulink','SolidWorks','CoppeliaSim','Streamlit','CustomTkinter','Roboflow','Git & GitHub'];
 /* ============================================================================ */
 
@@ -547,7 +656,8 @@ var STACK=['Python','YOLOv8','OpenCV','TensorFlow','PyTorch','ByteTrack','Arduin
   var esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
   var root=document.documentElement, btn=document.getElementById('themeBtn');
   function cur(){return root.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}
-  function set(t){root.setAttribute('data-theme',t);btn.textContent=t==='dark'?'☀️':'🌙';try{localStorage.setItem('theme',t)}catch(e){}}
+  var themeMeta=document.getElementById('themeColor');
+  function set(t){root.setAttribute('data-theme',t);btn.textContent=t==='dark'?'☀️':'🌙';if(themeMeta)themeMeta.setAttribute('content',t==='dark'?'#1a1512':'#faf6f0');try{localStorage.setItem('theme',t)}catch(e){}}
   var saved=null;try{saved=localStorage.getItem('theme')}catch(e){}
   set(saved||'light');
   btn.onclick=function(){set(cur()==='dark'?'light':'dark')};
@@ -582,10 +692,89 @@ var STACK=['Python','YOLOv8','OpenCV','TensorFlow','PyTorch','ByteTrack','Arduin
   var certHtml=function(dup){return CERTS.map(function(c,i){
     var src=c.img||THUMB(c.id,800);
     return '<div class="card cert"'+(dup?' aria-hidden="true"':' tabindex="0"')+' '+(c.img?'data-local="'+c.img+'"':'data-doc="'+c.id+'"')+'>'+
-      '<div class="ci"><img loading="lazy" src="'+src+'" alt="'+esc(c.t)+'" onerror="'+fb('📜')+'"></div>'+
+      '<div class="ci"><img loading="lazy" draggable="false" src="'+src+'" alt="'+esc(c.t)+'" onerror="'+fb('📜')+'"></div>'+
       '<div class="cinfo"><b>'+esc(c.t)+'</b><span class="muted" style="font-size:.82rem">'+esc(c.s)+'</span>'+(c.badge?'<br><span class="badge">'+esc(c.badge)+'</span>':'')+'</div></div>';
   }).join('');};
   document.getElementById('certs').innerHTML='<div class="ctrack">'+certHtml(false)+certHtml(true)+'</div>';
+
+  // certificates carousel: auto-scrolls, and anyone can drag / swipe / use arrows or keyboard at any time
+  (function(){
+    var box=document.getElementById('certs'),track=box.querySelector('.ctrack');
+    var prev=document.getElementById('certPrev'),next=document.getElementById('certNext');
+    var reduceM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var SPEED=0.04;            // px per ms of auto-scroll (~40px/s)
+    var x=0,half=0,last=0,vel=0,hover=false,focusIn=false,resumeAt=0,tween=null;
+    var drag=null,suppressClick=false;
+    function measure(){half=track.scrollWidth/2;}
+    function step(){var c=track.querySelector('.cert');if(!c)return 260;var cs=getComputedStyle(c);return c.offsetWidth+parseFloat(cs.marginRight||0);}
+    function norm(v){return half>0?((v%half)+half)%half:v;}
+    function render(){track.style.transform='translate3d('+(-x)+'px,0,0)';}
+    function pauseFor(ms){resumeAt=performance.now()+ms;}
+    function frame(t){
+      var dt=Math.min(50,t-(last||t));last=t;
+      if(!half)measure();
+      if(drag&&drag.moved){/* position set by pointer */}
+      else if(tween){var k=Math.min(1,(t-tween.s)/tween.d),e=1-Math.pow(1-k,3);x=tween.from+(tween.to-tween.from)*e;if(k>=1){x=norm(tween.to);tween=null;pauseFor(2500);}}
+      else{
+        if(Math.abs(vel)>0.002){x+=vel*dt;vel*=Math.pow(0.994,dt);}
+        else vel=0;
+        if(!reduceM&&!hover&&!focusIn&&!drag&&t>resumeAt)x+=SPEED*dt;
+      }
+      if(!tween)x=norm(x);
+      render();requestAnimationFrame(frame);
+    }
+    function go(dir){vel=0;var from=x,s=step();tween={from:from,to:from+dir*s,s:performance.now(),d:420};}
+    prev.addEventListener('click',function(){go(-1)});
+    next.addEventListener('click',function(){go(1)});
+    box.addEventListener('keydown',function(e){if(e.key==='ArrowRight'){e.preventDefault();go(1)}else if(e.key==='ArrowLeft'){e.preventDefault();go(-1)}});
+    box.addEventListener('pointerenter',function(e){if(e.pointerType==='mouse')hover=true});
+    box.addEventListener('pointerleave',function(e){if(e.pointerType==='mouse')hover=false});
+    box.addEventListener('focusin',function(){focusIn=true});
+    box.addEventListener('focusout',function(){focusIn=false});
+    box.addEventListener('pointerdown',function(e){
+      if(e.pointerType==='mouse'&&e.button!==0)return;
+      tween=null;vel=0;
+      drag={id:e.pointerId,sx:e.clientX,sy:e.clientY,ox:x,lx:e.clientX,lt:e.timeStamp,v:0,moved:false};
+    });
+    function move(e){
+      if(!drag||e.pointerId!==drag.id)return;
+      var dx=e.clientX-drag.sx,dy=e.clientY-drag.sy;
+      if(!drag.moved){
+        if(Math.abs(dx)<7)return;
+        if(Math.abs(dy)>Math.abs(dx)){drag=null;return;} // vertical scroll intent
+        drag.moved=true;box.classList.add('dragging');
+        try{box.setPointerCapture(e.pointerId)}catch(_){}
+      }
+      x=drag.ox-dx;
+      var dt=e.timeStamp-drag.lt;
+      if(dt>0){drag.v=0.7*(-(e.clientX-drag.lx)/dt)+0.3*drag.v;}
+      drag.lx=e.clientX;drag.lt=e.timeStamp;
+      if(e.cancelable)e.preventDefault();
+    }
+    function end(e){
+      if(!drag||(e&&e.pointerId!==drag.id))return;
+      if(drag.moved){
+        vel=Math.max(-2.5,Math.min(2.5,drag.v));
+        suppressClick=true;setTimeout(function(){suppressClick=false},60);
+        pauseFor(1800);
+      }
+      box.classList.remove('dragging');drag=null;
+    }
+    box.addEventListener('pointermove',move,{passive:false});
+    box.addEventListener('pointerup',end);
+    box.addEventListener('pointercancel',end);
+    box.addEventListener('lostpointercapture',function(e){if(e.target===box)end(e)}); // ignore the card's implicit touch capture being released
+    // a drag must not open a certificate
+    box.addEventListener('click',function(e){if(suppressClick){e.stopPropagation();e.preventDefault();suppressClick=false;}},true);
+    // trackpad / shift+wheel horizontal scrolling
+    box.addEventListener('wheel',function(e){
+      var d=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:(e.shiftKey?e.deltaY:0);
+      if(!d)return;e.preventDefault();tween=null;vel=0;x+=d;pauseFor(1800);
+    },{passive:false});
+    addEventListener('resize',function(){measure()});
+    addEventListener('load',function(){measure()});
+    measure();render();requestAnimationFrame(frame);
+  })();
 
   // modal
   var modal=document.getElementById('modal'),mc=document.getElementById('mcontent');
@@ -600,6 +789,45 @@ var STACK=['Python','YOLOv8','OpenCV','TensorFlow','PyTorch','ByteTrack','Arduin
     else if(im)open('<img src="'+THUMB(im.dataset.img,2000)+'" alt="">');
     else if(d)open('<iframe class="doc" src="'+PREVIEW(d.dataset.doc)+'"></iframe>');
     else if(l)open('<img src="'+l.dataset.local+'" alt="">');
+  });
+
+  // mobile menu
+  var menuBtn=document.getElementById('menuBtn'),navLinksEl=document.getElementById('navLinks');
+  function setMenu(o){navLinksEl.classList.toggle('open',o);menuBtn.setAttribute('aria-expanded',o?'true':'false');menuBtn.setAttribute('aria-label',o?'Close menu':'Open menu');}
+  menuBtn.addEventListener('click',function(e){e.stopPropagation();setMenu(!navLinksEl.classList.contains('open'))});
+  navLinksEl.addEventListener('click',function(e){if(e.target.closest('a'))setMenu(false)});
+  document.addEventListener('click',function(e){if(navLinksEl.classList.contains('open')&&!e.target.closest('#nav'))setMenu(false)});
+  addEventListener('keydown',function(e){if(e.key==='Escape')setMenu(false)});
+  addEventListener('resize',function(){if(innerWidth>860)setMenu(false)});
+
+  // anonymous message form
+  var form=document.getElementById('msgForm'),txt=document.getElementById('msgText'),cnt=document.getElementById('msgCount'),
+      sbtn=document.getElementById('msgBtn'),stat=document.getElementById('msgStatus'),honey=document.getElementById('msgHoney');
+  function status(m,cls){stat.textContent=m;stat.className='msg-status'+(cls?' '+cls:'');}
+  txt.addEventListener('input',function(){cnt.textContent=txt.value.length+' / 2000';if(stat.classList.contains('err'))status('')});
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var m=txt.value.trim();
+    if(m.length<2){status('Please write a message first.','err');txt.focus();return;}
+    if(honey.value){status('Thanks! Your message was sent.','ok');form.reset();return;} // bot trap
+    sbtn.disabled=true;sbtn.textContent='Sending…';status('');
+    var ctrl=('AbortController' in window)?new AbortController():null,to=setTimeout(function(){if(ctrl)ctrl.abort()},20000);
+    fetch(MSG_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({message:m,_subject:'💬 New anonymous message from your portfolio',_template:'box',_captcha:'false'}),
+      signal:ctrl?ctrl.signal:undefined})
+    .then(function(r){return r.json().catch(function(){return {}}).then(function(d){return {ok:r.ok,d:d}})})
+    .then(function(res){
+      clearTimeout(to);
+      if(res.ok&&String(res.d.success)!=='false'){
+        status('Thanks! Your message was sent anonymously. ✓','ok');form.reset();cnt.textContent='0 / 2000';
+        sbtn.textContent='Sent ✓';setTimeout(function(){sbtn.disabled=false;sbtn.textContent='Send anonymously →'},15000);
+      }else throw new Error(res.d&&res.d.message||'failed');
+    })
+    .catch(function(){
+      clearTimeout(to);
+      status('Sorry, it couldn\'t be sent right now. Please try again in a moment.','err');
+      sbtn.disabled=false;sbtn.textContent='Send anonymously →';
+    });
   });
 
   // typing roles
